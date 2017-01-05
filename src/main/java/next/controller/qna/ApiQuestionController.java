@@ -3,14 +3,7 @@ package next.controller.qna;
 import java.util.List;
 import java.util.Map;
 
-import next.CannotOperateException;
-import next.dao.AnswerDao;
-import next.dao.QuestionDao;
-import next.model.Answer;
-import next.model.Question;
-import next.model.Result;
-import next.model.User;
-import next.service.QnaService;
+import javax.inject.Inject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +16,26 @@ import com.google.common.collect.Maps;
 
 import core.jdbc.DataAccessException;
 import core.web.argumentresolver.LoginUser;
+import next.CannotOperateException;
+import next.dao.AnswerDao;
+import next.dao.QuestionDao;
+import next.model.Answer;
+import next.model.Question;
+import next.model.Result;
+import next.model.User;
+import next.service.QnaService;
 
 @RestController
 @RequestMapping("/api/questions")
 public class ApiQuestionController {
 	private Logger log = LoggerFactory.getLogger(ApiQuestionController.class);
 	
-	private QuestionDao questionDao = QuestionDao.getInstance();
-	private AnswerDao answerDao = AnswerDao.getInstance();
-	private QnaService qnaService = new QnaService(questionDao, answerDao);
+	@Inject
+	private QnaService qnaService; 
+	@Inject
+	private QuestionDao questionDao;
+	@Inject
+	private AnswerDao answerDao;
 	
 	@RequestMapping(value="/{questionId}", method=RequestMethod.DELETE)
 	public Result deleteQuestion(@LoginUser User loginUser, @PathVariable long questionId) throws Exception {
